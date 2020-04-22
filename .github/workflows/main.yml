@@ -116,6 +116,29 @@ jobs:
         echo 'export/android/debug_keystore = "/tmp/debug.keystore"' >> ~/.config/godot/editor_settings-3.tres
         echo 'export/android/debug_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-3.tres
         echo 'export/android/debug_user = "android"' >> ~/.config/godot/editor_settings-3.tres
+    - name: Printing debug info
+      run: |
+        echo "===== ENVIRONMENT VARIABLES ===="
+        env
+        echo "===== DIRECTORY INDEX OF $ANDROID_HOME (2 LEVELS) ====="
+        ls $ANDROID_HOME/*
+        echo "===== DETAILS ABOUT ADB ====="
+        file $ANDROID_HOME/platform-tools/adb
+        stat $ANDROID_HOME/platform-tools/adb
+        echo "===== DETAILS ABOUT JARSIGNER ====="
+        JARSIGNER=$(which jarsigner)
+        echo $JARSIGNER
+        file $JARSIGNER
+        stat $JARSIGNER
+        echo "===== CONTENTS OF EDITOR-SETTINGS (~/.config/godot/editor_settings-3.tres) ====="
+        cat ~/.config/godot/editor_settings-3.tres
+        echo "===== DETAILS ABOUT debug.keystore ====="
+        file /tmp/debug.keystore
+        stat /tmp/debug.keystore
+        echo "===== DETAILS ABOUT EXPORT TEMPLATES ====="
+        echo "~/.local/share/godot/templates/3.2.1.stable/"
+        file ~/.local/share/godot/templates/3.2.1.stable/
+        ls ~/.local/share/godot/templates/3.2.1.stable/
     - name: Build project
       run: ./godot --export android blockworld-android.apk project.godot;
     - name: Upload artifact
