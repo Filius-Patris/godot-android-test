@@ -1,0 +1,125 @@
+name: Build project
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  linux-x11-64:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Godot
+      run: |
+        echo "===== DOWNLOADING GODOT EXECUTABLE ====="
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip && \
+        unzip Godot_v3.2.1-stable_linux_headless.64.zip && \
+        mv -v Godot_v3.2.1-stable_linux_headless.64 godot;
+        echo "===== DOWNLOADING EXPORT TEMPLATES ====="
+        mkdir -vp ~/.local/share/godot/templates/3.2.1.stable/ && \
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz && \
+        unzip Godot_v3.2.1-stable_export_templates.tpz && \
+        mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
+        
+        mkdir -vp ../out;
+    - name: Build project
+      run: ./godot --export linux-x11-64 ../out/blockworld-linux-x11-64 project.godot;
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: blockworld-linux-x11-64
+        path: ../out
+  windows-64:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Godot
+      run: |
+        echo "===== DOWNLOADING GODOT EXECUTABLE ====="
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip && \
+        unzip Godot_v3.2.1-stable_linux_headless.64.zip && \
+        mv -v Godot_v3.2.1-stable_linux_headless.64 godot;
+        echo "===== DOWNLOADING EXPORT TEMPLATES ====="
+        mkdir -vp ~/.local/share/godot/templates/3.2.1.stable/ && \
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz && \
+        unzip Godot_v3.2.1-stable_export_templates.tpz && \
+        mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
+        
+        mkdir -vp ../out;
+    - name: Build project
+      run: ./godot --export windows-64 ../out/blockworld-windows-64.exe project.godot;
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: blockworld-windows-64
+        path: ../out
+  macos:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Godot
+      run: |
+        echo "===== DOWNLOADING GODOT EXECUTABLE ====="
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip && \
+        unzip Godot_v3.2.1-stable_linux_headless.64.zip && \
+        mv -v Godot_v3.2.1-stable_linux_headless.64 godot;
+        echo "===== DOWNLOADING EXPORT TEMPLATES ====="
+        mkdir -vp ~/.local/share/godot/templates/3.2.1.stable/ && \
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz && \
+        unzip Godot_v3.2.1-stable_export_templates.tpz && \
+        mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
+    - name: Build project
+      run: ./godot --export macos blockworld-macos.dmg project.godot;
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: blockworld-macos.dmg
+        path: blockworld-macos.dmg
+  android:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Godot
+      run: |
+        echo "===== DOWNLOADING GODOT EXECUTABLE ====="
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip && \
+        unzip Godot_v3.2.1-stable_linux_headless.64.zip && \
+        mv -v Godot_v3.2.1-stable_linux_headless.64 godot;
+        echo "===== DOWNLOADING EXPORT TEMPLATES ====="
+        mkdir -vp ~/.local/share/godot/templates/3.2.1.stable/ && \
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz && \
+        unzip Godot_v3.2.1-stable_export_templates.tpz && \
+        mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
+    - name: Generate debug keystore
+      run: |
+        keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore /tmp/debug.keystore \
+            -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999;
+    - name: Configure Godot
+      run: |
+        # Let godot generate editor_settings-3.tres
+        ./godot -e -q
+        # Delete default settings if they exist
+        sed -i '/export\/android\/adb/d' /root/.config/godot/editor_settings-3.tres \
+        && sed -i '/export\/android\/jarsigner/d' ~/.config/godot/editor_settings-3.tres \
+        && sed -i '/export\/android\/debug_keystore/d' ~/.config/godot/editor_settings-3.tres \
+        && sed -i '/export\/android\/debug_keystore_user/d' ~/.config/godot/editor_settings-3.tres \
+        && sed -i '/export\/android\/debug_keystore_pass/d' ~/.config/godot/editor_settings-3.tres;
+        # Set new settings
+        echo 'export/android/adb = "/usr/local/lib/android/sdk/platform-tools/adb"' >> ~/.config/godot/editor_settings-3.tres
+        echo 'export/android/jarsigner = "/usr/bin/jarsigner"' >> ~/.config/godot/editor_settings-3.tres
+        echo 'export/android/debug_keystore = "/tmp/debug.keystore"' >> ~/.config/godot/editor_settings-3.tres
+        echo 'export/android/debug_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-3.tres
+        echo 'export/android/debug_user = "android"' >> ~/.config/godot/editor_settings-3.tres
+    - name: Build project
+      run: ./godot --export android blockworld-android.apk project.godot;
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: blockworld-android.apk
+        path: blockworld-android.apk
