@@ -26,11 +26,11 @@ jobs:
         
         mkdir -vp ../out;
     - name: Build project
-      run: ./godot --export linux-x11-64 ../out/blockworld-linux-x11-64 project.godot;
+      run: ./godot --export linux-x11-64 ../out/godot-android-test-linux-x11-64 project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: blockworld-linux-x11-64
+        name: godot-android-test-linux-x11-64
         path: ../out
   windows-64:
     runs-on: ubuntu-latest
@@ -51,11 +51,11 @@ jobs:
         
         mkdir -vp ../out;
     - name: Build project
-      run: ./godot --export windows-64 ../out/blockworld-windows-64.exe project.godot;
+      run: ./godot --export windows-64 ../out/godot-android-test-windows-64.exe project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: blockworld-windows-64
+        name: godot-android-test-windows-64
         path: ../out
   macos:
     runs-on: ubuntu-latest
@@ -74,12 +74,12 @@ jobs:
         unzip Godot_v3.2.1-stable_export_templates.tpz && \
         mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
     - name: Build project
-      run: ./godot --export macos blockworld-macos.dmg project.godot;
+      run: ./godot --export macos godot-android-test-macos.dmg project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: blockworld-macos.dmg
-        path: blockworld-macos.dmg
+        name: godot-android-test-macos.dmg
+        path: godot-android-test-macos.dmg
   android:
     runs-on: ubuntu-latest
     steps:
@@ -136,9 +136,9 @@ jobs:
         file ~/.local/share/godot/templates/3.2.1.stable/
         ls ~/.local/share/godot/templates/3.2.1.stable/
     - name: Build project
-      run: ./godot --export-debug android blockworld-android.apk project.godot;
+      run: ./godot --export-debug android godot-android-test-android.apk project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: blockworld-android.apk
-        path: blockworld-android.apk
+        name: godot-android-test-android.apk
+        path: godot-android-test-android.apk
