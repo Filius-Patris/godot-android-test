@@ -98,7 +98,7 @@ jobs:
         mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
     - name: Generate debug keystore
       run: |
-        keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore /tmp/debug.keystore \
+        keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore \
             -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999;
     - name: Configure Godot
       run: |
@@ -109,6 +109,7 @@ jobs:
         # Set new settings
         echo 'export/android/adb = "/usr/local/lib/android/sdk/platform-tools/adb"' >> ~/.config/godot/editor_settings-3.tres
         echo 'export/android/jarsigner = "/usr/bin/jarsigner"' >> ~/.config/godot/editor_settings-3.tres
+        echo 'export/android/debug_keystore = ""' >> ~/.config/godot/editor_settings-3.tres
     - name: Printing debug info
       run: |
         echo "===== ENVIRONMENT VARIABLES ===="
