@@ -121,14 +121,13 @@ jobs:
         stat $ANDROID_HOME/platform-tools/adb
         echo "===== DETAILS ABOUT JARSIGNER ====="
         JARSIGNER=$(which jarsigner)
-        echo $JARSIGNER
         file $JARSIGNER
         stat $JARSIGNER
         echo "===== CONTENTS OF EDITOR-SETTINGS (~/.config/godot/editor_settings-3.tres) ====="
         cat ~/.config/godot/editor_settings-3.tres
         echo "===== DETAILS ABOUT debug.keystore ====="
-        file /tmp/debug.keystore
-        stat /tmp/debug.keystore
+        file debug.keystore
+        stat debug.keystore
         echo "===== DETAILS ABOUT EXPORT TEMPLATES ====="
         echo "~/.local/share/godot/templates/3.2.1.stable/"
         file ~/.local/share/godot/templates/3.2.1.stable/
