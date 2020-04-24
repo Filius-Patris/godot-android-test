@@ -109,9 +109,6 @@ jobs:
         # Set new settings
         echo 'export/android/adb = "/usr/local/lib/android/sdk/platform-tools/adb"' >> ~/.config/godot/editor_settings-3.tres
         echo 'export/android/jarsigner = "/usr/bin/jarsigner"' >> ~/.config/godot/editor_settings-3.tres
-        echo 'export/android/debug_keystore = "/tmp/debug.keystore"' >> ~/.config/godot/editor_settings-3.tres
-        echo 'export/android/debug_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-3.tres
-        echo 'export/android/debug_user = "android"' >> ~/.config/godot/editor_settings-3.tres
     - name: Printing debug info
       run: |
         echo "===== ENVIRONMENT VARIABLES ===="
