@@ -136,7 +136,7 @@ jobs:
         file ~/.local/share/godot/templates/3.2.1.stable/
         ls ~/.local/share/godot/templates/3.2.1.stable/
     - name: Build project
-      run: ./godot --export android blockworld-android.apk project.godot;
+      run: ./godot --export-debug android blockworld-android.apk project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
