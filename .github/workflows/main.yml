@@ -136,3 +136,36 @@ jobs:
       with:
         name: godot-android-test-android.apk
         path: godot-android-test-android.apk
+  android-signed:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Godot
+      run: |
+        echo "===== DOWNLOADING GODOT EXECUTABLE ====="
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip && \
+        unzip Godot_v3.2.1-stable_linux_headless.64.zip && \
+        mv -v Godot_v3.2.1-stable_linux_headless.64 godot;
+        echo "===== DOWNLOADING EXPORT TEMPLATES ====="
+        mkdir -vp ~/.local/share/godot/templates/3.2.1.stable/ && \
+        curl -O https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz && \
+        unzip Godot_v3.2.1-stable_export_templates.tpz && \
+        mv templates/* ~/.local/share/godot/templates/3.2.1.stable/;
+    - name: Decrypt signing key
+      run: |
+        gpg --quiet --batch --yes --passphrase="$DECRYPTION_KEY" --output release.keystore release.keystore.gpg
+    - name: Configure Godot
+      run: |
+        # Let godot generate editor_settings-3.tres
+        ./godot -e -q
+        # Replace custom settings
+        sed -i 's|export/android/adb.*|export/android/adb = "/usr/local/lib/android/sdk/platform-tools/adb"|' ~/.config/godot/editor_settings-3.tres;
+        sed -i 's|export/android/jarsigner.*|export/android/jarsigner = "/usr/bin/jarsigner"|' ~/.config/godot/editor_settings-3.tres;
+    - name: Build project
+      run: ./godot --export android godot-android-test-android-signed.apk project.godot;
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: godot-android-test-android-signed.apk
+        path: godot-android-test-android-signed.apk
