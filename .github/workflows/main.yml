@@ -167,7 +167,7 @@ jobs:
       env:
         KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
     - name: Build project
-      run: ./godot --export android godot-android-test-android-signed.apk project.godot;
+      run: ./godot --export android-release godot-android-test-android-signed.apk project.godot;
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
