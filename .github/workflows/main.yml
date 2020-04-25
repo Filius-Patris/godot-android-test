@@ -151,6 +151,8 @@ jobs:
     - name: Decrypt signing key
       run: |
         gpg --quiet --batch --yes --passphrase="$DECRYPTION_KEY" --output release.keystore release.keystore.gpg
+      env:
+        DECRYPTION_KEY: ${{ secrets.DECRYPTION_KEY }}
     - name: Configure Godot
       run: |
         # Let godot generate editor_settings-3.tres
